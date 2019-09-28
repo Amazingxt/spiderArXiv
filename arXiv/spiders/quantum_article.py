@@ -2,6 +2,7 @@
 import scrapy
 from arXiv.items import ArxivItem
 
+
 class QuantumArticleSpider(scrapy.Spider):
     name = 'quantum_article'
     allowed_domains = ['arxiv.com']
@@ -9,12 +10,23 @@ class QuantumArticleSpider(scrapy.Spider):
 
     def parse(self, response):
         item = ArxivItem()
-        for articl_res, url_res in zip(response.xpath('//dd/div[@class="meta"]'),response.xpath('//dt')):
-            item['title'] = articl_res.xpath('./div[@class="list-title mathjax"]/text()[2]').extract()[0][:-2]
-            abstract = articl_res.xpath('./p[@class="mathjax"]/text()').extract()
-            if len(abstract)>0:
-                item['abstract'] = articl_res.xpath('./p[@class="mathjax"]/text()').extract()[0]
+        for articl_res, url_res in zip(response.xpath('//dd/div[@class="meta"]'), response.xpath('//dt')):
+            item['title'] = articl_res.xpath(
+                './div[@class="list-title mathjax"]/text()[2]').extract()[0][:-2]
+            abstract = articl_res.xpath(
+                './p[@class="mathjax"]/text()').extract()
+            if len(abstract) > 0:
+                item['abstract'] = articl_res.xpath(
+                    './p[@class="mathjax"]/text()').extract()[0]
             else:
                 item['abstract'] = None
-            item['url'] = 'https://arxiv.org' + url_res.xpath('./span/a[@title="Download PDF"]/@href').extract()[0]
+            item['url'] = 'https://arxiv.org' + \
+                url_res.xpath(
+                    './span/a[@title="Download PDF"]/@href').extract()[0]
+
+            authors = ''
+            for author in articl_res.xpath('./div[@class="list-authors"]//a/text()').extract():
+                author = author + ', '
+                authors += author
+            item['authors'] = authors
             yield item

@@ -16,3 +16,5 @@ class ArxivItem(scrapy.Item):
     abstract = scrapy.Field()
 
     url = scrapy.Field()
+
+    authors = scrapy.Field()

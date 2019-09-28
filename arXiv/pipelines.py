@@ -38,5 +38,5 @@ class ArxivPipeline(object):
             pass
 
         self.c.execute('insert into user_tb values(null, ?, ?, ?, ?)',
-            ((item['title'],item['abstract'],item['url'],'abc')))
+            ((item['title'],item['abstract'],item['url'],item['authors'])))
 
