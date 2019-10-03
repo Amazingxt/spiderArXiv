@@ -14,8 +14,8 @@ class ArxivPipeline(object):
 
     def __init__(self):
 
-        self.today = str(i.year)+'-'+str(i.month)+'-'+str(i.day)+'-quant-ph.db'
-        self.conn = sqlite3.connect(self.today)
+        self.today = str(i.year)+'-'+str(i.month)+'-'+str(i.day)+'-articles.db'
+        self.conn = sqlite3.connect('./Web_in_dash/DataBase/' + self.today)
         self.c = self.conn.cursor()
 
     def close_spider(self,spider):
@@ -32,11 +32,12 @@ class ArxivPipeline(object):
                 title text,
                 abstract text,
                 url text,
-                authors text)
+                authors text,
+                major text)
                 ''')
         except:
             pass
 
-        self.c.execute('insert into user_tb values(null, ?, ?, ?, ?)',
-            ((item['title'],item['abstract'],item['url'],item['authors'])))
+        self.c.execute('insert into user_tb values(null, ?, ?, ?, ?,?)',
+            ((item['title'],item['abstract'],item['url'],item['authors'],item['major'])))
 

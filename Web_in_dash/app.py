@@ -45,8 +45,46 @@ app.layout = html.Div([
         style={
         'textAlign': 'center',
     }),
+
     html.Div([
-        html.P('专业领域'),
+        html.P('兴趣领域'),
+        dcc.Dropdown(
+            id='major-column',
+            options=[{'label': 'Quantum Physics', 'value': 'quant-ph'},
+                     {'label': 'Accelerator Physics', 'value': 'physics.acc-ph'},
+                     {'label': 'Atmospheric and Oceanic Physics',
+                         'value': 'physics.ao-ph'},
+                     {'label': 'Atomic and Molecular Clusters',
+                         'value': 'physics.atm-clus'},
+                     {'label': 'Biological Physics', 'value': 'physics.bio-ph'},
+                     {'label': 'Chemical Physics', 'value': 'physics.chem-ph'},
+                     {'label': 'Classical Physics', 'value': 'physics.class-ph'},
+                     {'label': 'Computational Physics',
+                         'value': 'physics.comp-ph'},
+                     {'label': 'Data Analysis, Statistics and Probability',
+                         'value': 'physics.data-an'},
+                     {'label': 'Fluid Dynamics', 'value': 'physics.flu-dyn'},
+                     {'label': 'Optics', 'value': 'physics.optics'},
+                     {'label': 'Plasma Physics', 'value': 'physics.plasm-ph'},
+                     {'label': 'Space Physics', 'value': 'physics.space-ph'},
+                     {'label': 'Nuclear Theory', 'value': 'nucl-th'},
+                     {'label': 'Nuclear Experiment', 'value': 'nucl-ex'},
+                     {'label': 'Mathematical Physics', 'value': 'math-ph'},
+                     {'label': 'High Energy Physics - Theory', 'value': 'hep-th'},
+                     {'label': 'High Energy Physics - Experiment', 'value': 'nucl-ex'},
+                     {'label': 'Condensed Matter', 'value': 'cond-mat'},
+                     {'label': 'Astrophysics', 'value': 'astro-ph'}, ],
+            value='quant-ph'
+        )],
+        style={
+        'textAlign': 'center',
+
+    }),
+
+    html.P(' '),
+
+    html.Div([
+        html.P('专业'),
         dcc.Input(id='major-box', type='text')
     ],
         style={
@@ -100,7 +138,8 @@ app.layout = html.Div([
 
 @app.callback(
     dash.dependencies.Output('output-container-button', 'children'),
-    [dash.dependencies.Input('button', 'n_clicks')],
+    [dash.dependencies.Input('button', 'n_clicks'),
+     dash.dependencies.Input('major-column', 'value')],
     [dash.dependencies.State('name-box', 'value'),
      dash.dependencies.State('email-box', 'value'),
      dash.dependencies.State('major-box', 'value'),
@@ -108,9 +147,10 @@ app.layout = html.Div([
      dash.dependencies.State('keywords-box', 'value'),
      dash.dependencies.State('author-box', 'value')]
 )
-def update_output(n_clicks, name, email, major, company, keywords, author):
+def update_output(n_clicks, major_interest, name, email, major, company, keywords, author):
 
-    conn = sqlite3.connect('personQueryInfo.db')
+    database = './DataBase/personQueryInfo.db'
+    conn = sqlite3.connect(database)
     c = conn.cursor()
 
     try:
@@ -121,7 +161,8 @@ def update_output(n_clicks, name, email, major, company, keywords, author):
             email text,
             person text,
             company text,
-            major text)
+            major text,
+            major_interest text)
             ''')
     except:
         pass
@@ -136,8 +177,8 @@ def update_output(n_clicks, name, email, major, company, keywords, author):
         return '填写信息不全'
 
     else:
-        c.execute('insert into user_tb values(null, ?, ?, ?, ?, ?, ?)',
-                  ((keywords, author, email, name, company, major)))
+        c.execute('insert into user_tb values(null, ?, ?, ?, ?, ?, ?, ?)',
+                  ((keywords, author, email, name, company, major, major_interest)))
 
         conn.commit()
 

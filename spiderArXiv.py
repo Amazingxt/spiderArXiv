@@ -7,7 +7,7 @@ import datetime
 
 i = datetime.datetime.now()
 
-dbName = 'personQueryInfo.db'
+dbName = './Web_in_dash/DataBase/personQueryInfo.db'
 
 
 def get_articleInfo():
@@ -95,9 +95,10 @@ def draw_Info(articleInfo, personsInfo, personIndex):
 
     Info = {}
     for index, article_index in personIndex.items():
-        infomation = merge_Info(articleInfo, article_index)
+        if personsInfo['major_interest'][index] == articleInfo['major'][index]:
+            infomation = merge_Info(articleInfo, article_index)
 
-        Info[personsInfo['email'][index]] = infomation
+            Info[personsInfo['email'][index]] = infomation
 
     return Info
 
