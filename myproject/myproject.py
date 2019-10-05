@@ -3,10 +3,12 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import sqlite3
+from flask import Flask
+server = Flask(__name__)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, server=server, external_stylesheets=external_stylesheets)
 
 colors = {
     'background': '#228B22',
@@ -188,4 +190,4 @@ def update_output(n_clicks, major_interest, name, email, major, company, keyword
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=False)
